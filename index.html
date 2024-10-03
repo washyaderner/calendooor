@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Calendooor</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Main container holding the calendar and sidebar -->
+    <div id="main-container">
+        <!-- Calendar and Notification Settings -->
+        <div id="calendar-container">
+            <!-- Header showing today's date and dynamic time with seconds in green -->
+            <h1 id="current-date-time" class="highlight-today"></h1>
+            
+            <h1>Calendooor</h1>
+            <!-- Calendar grid -->
+            <div id="calendar"></div>
+
+            <!-- Notification settings for setting reminders -->
+            <div id="notification-settings">
+                <h2>Set Reminder</h2>
+
+                <!-- Dropdown for selecting time -->
+                <label for="reminder-time">Select Time:</label>
+                <select id="reminder-time">
+                    <!-- Time options will be dynamically populated -->
+                </select>
+
+                <!-- Repeat interval dropdown -->
+                <label for="repeat-interval">Repeat:</label>
+                <select id="repeat-interval">
+                    <option value="none">None</option>
+                    <option value="15">Every 15 minutes</option>
+                    <option value="30">Every 30 minutes</option>
+                    <option value="60">Every hour</option>
+                    <option value="daily">Daily</option>
+                    <option value="weekly">Weekly</option>
+                </select>
+
+                <!-- Button to set reminder -->
+                <button id="set-reminder-btn">Set Reminder</button>
+            </div>
+        </div>
+
+        <!-- Right Sidebar for List of Reminders -->
+        <div id="reminder-sidebar">
+            <h2>Upcoming Reminders</h2>
+            <ul id="reminder-list">
+                <!-- List of reminders will be populated here dynamically -->
+            </ul>
+
+            <!-- Detailed view for editing selected reminder -->
+            <div id="reminder-details" class="hidden">
+                <h3>Edit Reminder</h3>
+                <label for="edit-reminder-date">Date:</label>
+                <input type="date" id="edit-reminder-date">
+                <label for="edit-reminder-time">Time:</label>
+                <input type="time" id="edit-reminder-time" step="900"> <!-- 15-minute intervals -->
+                <!-- Update and Delete Buttons -->
+                <button id="update-reminder-btn">Update Reminder</button>
+                <button id="delete-reminder-btn">Delete Reminder</button>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

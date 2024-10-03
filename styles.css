@@ -1,0 +1,172 @@
+/* styles.css */
+
+/* Main container to hold the calendar and sidebar */
+#main-container {
+    display: flex;
+    justify-content: center; /* Center the calendar on the page */
+    align-items: flex-start;
+    height: 100vh;
+    width: 100%;
+}
+
+/* Body styling */
+body {
+    background-color: #2c2c2c;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    margin: 0;
+}
+
+/* Calendar container styling */
+#calendar-container {
+    text-align: center;
+    background-color: #3a3a3a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 60%; /* Set calendar width to 60% */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    margin-right: 20px; /* Spacing between calendar and reminders section */
+}
+
+/* Today's date and time styling */
+h1#current-date-time.highlight-today {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #0ecc75; /* Rich green color */
+    text-shadow: 1px 1px 5px #0e944d; /* Slight 3D effect */
+}
+
+/* Calendar grid styling */
+#calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+/* Styling for calendar days */
+.calendar-day {
+    background-color: #4a4a4a;
+    border: 1px solid #555;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.3s ease;
+}
+
+/* Hover and selected styling for days */
+.calendar-day:hover, .calendar-day.selected {
+    background: linear-gradient(145deg, #0ecc75, #0e944d); /* Gradient green with 3D effect */
+    border-color: #0ecc75;
+    color: #ffffff;
+}
+
+/* Day headers (Sun, Mon, etc.) styling */
+.day-header {
+    font-weight: bold;
+    border-bottom: 2px solid #ffffff;
+    padding: 10px;
+    text-align: center;
+}
+
+/* Notification settings styling */
+#notification-settings {
+    background-color: #4a4a4a;
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    text-align: left;
+    margin-bottom: 20px;
+}
+
+/* Input, select, and button styling */
+input, select, button {
+    margin: 10px 0;
+    padding: 10px;
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    background-color: #4a4a4a;
+    color: #ffffff;
+    width: calc(100% - 24px); /* Full width with padding */
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    transition: background 0.3s ease;
+}
+
+/* Hover effect for inputs, selects, and buttons */
+input:hover, select:hover, button:hover {
+    background: linear-gradient(145deg, #0ecc75, #0e944d); /* Gradient green for hover */
+    cursor: pointer;
+}
+
+/* Set Reminder button styling */
+button {
+    background-color: #4a4a4a;
+}
+
+button:hover {
+    background: linear-gradient(145deg, #0ecc75, #0e944d); /* Gradient green for hover */
+}
+
+/* Right sidebar for the list of reminders */
+#reminder-sidebar {
+    background-color: #3a3a3a;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px; /* Slimmed down width */
+    height: 100%;
+}
+
+/* Reminder list styling */
+#reminder-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Individual reminder list item styling */
+#reminder-list li {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: #4a4a4a;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+    transition: background 0.3s ease;
+}
+
+/* Hover effect for reminders */
+#reminder-list li:hover {
+    background: linear-gradient(145deg, #0ecc75, #0e944d); /* Gradient green for hover */
+}
+
+/* Hidden by default */
+.hidden {
+    display: none;
+}
+
+/* Detailed reminder view styling */
+#reminder-details {
+    margin-top: 20px;
+    background-color: #4a4a4a;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.4);
+}
+
+/* Styles for the Delete Reminder button */
+#delete-reminder-btn {
+    background-color: #ff4d4d; /* Red color to indicate deletion */
+    color: #ffffff;
+    margin-top: 10px;
+}
+
+#delete-reminder-btn:hover {
+    background-color: #e60000; /* Darker red on hover */
+}
+
+/* Ensure buttons in the reminder details align properly */
+#reminder-details button {
+    width: calc(100% - 24px); /* Full width with padding */
+    display: block;
+    margin: 10px 0;
+}
