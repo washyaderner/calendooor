@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', function () {
         createCalendar();
     });
 
-    // Update the populateTimeDropdown function to handle different months
+    // Populate the time dropdown based on the selected date
     function populateTimeDropdown(date) {
         reminderTimeDropdown.innerHTML = ''; // Clear existing options
 
@@ -210,6 +210,147 @@ document.addEventListener('DOMContentLoaded', function () {
 
             reminderList.appendChild(listItem);
         });
+    }
+
+    // Function to show details of the selected reminder in the detailed view
+    function showReminderDetails(reminder) {
+        reminderDetails.classList.remove('hidden');
+        editReminderDate.value = formatDateForInput(reminder.date); // Convert MM/DD/YYYY to YYYY-MM-DD
+        editReminderTime.value = convertTimeTo24Hour(reminder.time); // Convert time to 24-hour format
+    }
+
+    // Function to update a reminder
+    function updateReminder() {
+        if (currentEditingReminder) {
+            const newDate = editReminderDate.value; // YYYY-MM-DD
+            const newTime = formatTimeTo12Hour(...convertTimeFromInput(editReminderTime.value)); // HH:MM AM/PM
+            const formattedDate = formatDateFromInput(newDate); // MM/DD/YYYY
+
+            currentEditingReminder.date = formattedDate;
+            currentEditingReminder.time = newTime;
+            currentEditingReminder.notified = false; // Reset notification flag
+
+            saveReminders();
+            renderReminders();
+            alert(`Reminder updated to ${formattedDate} at ${newTime}`);
+            reminderDetails.classList.add('hidden');
+        }
+    }
+
+    // Function to delete a reminder
+    function deleteReminder() {
+        if (currentEditingReminder) {
+            // Remove the reminder from the array
+            reminders = reminders.filter(reminder => reminder.id !== currentEditingReminder.id);
+            saveReminders();
+            renderReminders();
+            alert('Reminder deleted.');
+            reminderDetails.classList.add('hidden'); // Hide the edit reminder window
+            currentEditingReminder = null;
+        }
+    }
+
+    // Helper function to format date from MM/DD/YYYY to YYYY-MM-DD
+    function formatDateForInput(date) {
+        const [month, day, year] = date.split('/');
+        return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+    }
+
+    // Helper function to format date from YYYY-MM-DD to MM/DD/YYYY
+    function formatDateFromInput(date) {
+        const [year, month, day] = date.split('-');
+        return `${month}/${day}/${year}`;
+    }
+
+    // Convert time from 12-hour format to 24-hour format
+    function convertTimeTo24Hour(time12Hour) {
+        const [time, period] = time12Hour.split(' ');
+        let [hour, minute] = time.split(':').map(Number);
+        if (period === 'PM' && hour !== 12) hour += 12;
+        if (period === 'AM' && hour === 12) hour = 0;
+        hour = hour.toString().padStart(2, '0');
+        minute = minute.toString().padStart(2, '0');
+        return `${hour}:${minute}`;
+    }
+
+    // Convert time from 24-hour format to [hour, minute]
+    function convertTimeFromInput(time24Hour) {
+        let [hour, minute] = time24Hour.split(':').map(Number);
+        return [hour, minute];
+    }
+
+    // Function to check for due reminders every second
+    function checkReminders() {
+        const now = new Date();
+        const nowDateStr = now.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+        const nowTimeStr = formatTimeTo12Hour(now.getHours(), now.getMinutes());
+
+        reminders.forEach(reminder => {
+            if (!reminder.notified && reminder.date === nowDateStr && reminder.time === nowTimeStr) {
+                // Play the alarm sound (if implemented)
+                // alarmSound.play().catch(error => console.error('Error playing the alarm sound:', error));
+
+                // Trigger alert
+                alert(`Reminder: It's time for your reminder set on ${reminder.date} at ${reminder.time}.`);
+                reminder.notified = true;
+
+                // Handle repeating reminders
+                if (reminder.repeat !== 'none') {
+                    scheduleNextReminder(reminder);
+                }
+            }
+        });
+
+        saveReminders();
+    }
+
+    // Function to schedule the next occurrence of a repeating reminder
+    function scheduleNextReminder(reminder) {
+        let reminderDateTime = new Date(`${formatDateForSorting(reminder.date)}T${convertTimeTo24Hour(reminder.time)}:00`);
+
+        switch (reminder.repeat) {
+            case '15':
+                reminderDateTime.setMinutes(reminderDateTime.getMinutes() + 15);
+                break;
+            case '30':
+                reminderDateTime.setMinutes(reminderDateTime.getMinutes() + 30);
+                break;
+            case '60':
+                reminderDateTime.setHours(reminderDateTime.getHours() + 1);
+                break;
+            case 'daily':
+                reminderDateTime.setDate(reminderDateTime.getDate() + 1);
+                break;
+            case 'weekly':
+                reminderDateTime.setDate(reminderDateTime.getDate() + 7);
+                break;
+            default:
+                break;
+        }
+
+        reminder.date = reminderDateTime.toLocaleDateString('en-US', { month: '2-digit', day: '2-digit', year: 'numeric' });
+        reminder.time = formatTimeTo12Hour(reminderDateTime.getHours(), reminderDateTime.getMinutes());
+        reminder.notified = false;
+    }
+
+    // Helper function to format date for sorting (convert MM/DD/YYYY to YYYY-MM-DD)
+    function formatDateForSorting(date) {
+        const [month, day, year] = date.split('/');
+        return `${year}-${month}-${day}`;
+    }
+
+    // Function to save reminders to localStorage
+    function saveReminders() {
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+    }
+
+    // Function to load reminders from localStorage
+    function loadReminders() {
+        const storedReminders = localStorage.getItem('reminders');
+        if (storedReminders) {
+            reminders = JSON.parse(storedReminders);
+            renderReminders();
+        }
     }
 
     // Initialize the app
