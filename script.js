@@ -15,9 +15,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const updateReminderBtn = document.getElementById('update-reminder-btn');
     const deleteReminderBtn = document.getElementById('delete-reminder-btn');
 
+    // Month Navigation Elements
+    const prevMonthBtn = document.getElementById('prev-month-btn');
+    const nextMonthBtn = document.getElementById('next-month-btn');
+    const currentMonthDisplay = document.getElementById('current-month');
+
     let selectedDate = null; // Placeholder to keep track of the selected date
     let reminders = []; // Array to store reminders
     let currentEditingReminder = null; // To track the reminder being edited
+
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth(); // 0-11
 
     // Function to get today's date and time with seconds
     function getTodayDateTime() {
@@ -70,13 +78,16 @@ document.addEventListener('DOMContentLoaded', function () {
             calendarContainer.appendChild(dayHeader);
         });
 
-        const currentDate = new Date();
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth();
-        const todayDate = currentDate.getDate(); // Get today's date
+        const firstDayOfMonth = new Date(currentYear, currentMonth, 1);
+        const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+        const startingDay = firstDayOfMonth.getDay();
 
-        const daysInMonth = new Date(year, month + 1, 0).getDate();
-        const startingDay = new Date(year, month, 1).getDay();
+        // Update the current month display
+        const monthNames = [
+            'January', 'February', 'March', 'April', 'May', 'June',
+            'July', 'August', 'September', 'October', 'November', 'December'
+        ];
+        currentMonthDisplay.textContent = `${monthNames[currentMonth]} ${currentYear}`;
 
         // Fill empty cells before the first day of the month
         for (let i = 0; i < startingDay; i++) {
@@ -90,10 +101,11 @@ document.addEventListener('DOMContentLoaded', function () {
             const dayElement = document.createElement('div');
             dayElement.className = 'calendar-day';
             dayElement.textContent = day;
-            dayElement.dataset.date = `${month + 1}/${day}/${year}`; // MM/DD/YYYY format
+            dayElement.dataset.date = `${currentMonth + 1}/${day}/${currentYear}`; // MM/DD/YYYY format
 
-            // Highlight today's date
-            if (day === todayDate) {
+            // Highlight today's date if it matches
+            const today = new Date();
+            if (day === today.getDate() && currentMonth === today.getMonth() && currentYear === today.getFullYear()) {
                 dayElement.classList.add('selected');
                 selectedDate = dayElement.dataset.date; // Set the selected date to today
                 populateTimeDropdown(selectedDate);
@@ -113,6 +125,27 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
+    // Event listeners for month navigation buttons
+    prevMonthBtn.addEventListener('click', () => {
+        if (currentMonth === 0) {
+            currentMonth = 11;
+            currentYear -= 1;
+        } else {
+            currentMonth -= 1;
+        }
+        createCalendar();
+    });
+
+    nextMonthBtn.addEventListener('click', () => {
+        if (currentMonth === 11) {
+            currentMonth = 0;
+            currentYear += 1;
+        } else {
+            currentMonth += 1;
+        }
+        createCalendar();
+    });
+
     // Populate the time dropdown based on the selected date
     function populateTimeDropdown(date) {
         reminderTimeDropdown.innerHTML = ''; // Clear existing options
@@ -120,10 +153,10 @@ document.addEventListener('DOMContentLoaded', function () {
         const now = new Date();
         let startHour = 5, startMinute = 0; // Default starting time is 5:00 AM
 
-        const selectedDate = new Date(date);
+        const selectedDateObj = new Date(date);
 
         // If the selected date is today, adjust startHour and startMinute
-        if (selectedDate.toDateString() === now.toDateString()) {
+        if (selectedDateObj.toDateString() === now.toDateString()) {
             startHour = now.getHours();
             startMinute = now.getMinutes();
 
@@ -246,20 +279,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return [hour, minute];
     }
 
-    // Function to save reminders to localStorage
-    function saveReminders() {
-        localStorage.setItem('reminders', JSON.stringify(reminders));
-    }
-
-    // Function to load reminders from localStorage
-    function loadReminders() {
-        const storedReminders = localStorage.getItem('reminders');
-        if (storedReminders) {
-            reminders = JSON.parse(storedReminders);
-            renderReminders();
-        }
-    }
-
     // Function to check for due reminders every second
     function checkReminders() {
         const now = new Date();
@@ -318,6 +337,20 @@ document.addEventListener('DOMContentLoaded', function () {
     function formatDateForSorting(date) {
         const [month, day, year] = date.split('/');
         return `${year}-${month}-${day}`;
+    }
+
+    // Function to save reminders to localStorage
+    function saveReminders() {
+        localStorage.setItem('reminders', JSON.stringify(reminders));
+    }
+
+    // Function to load reminders from localStorage
+    function loadReminders() {
+        const storedReminders = localStorage.getItem('reminders');
+        if (storedReminders) {
+            reminders = JSON.parse(storedReminders);
+            renderReminders();
+        }
     }
 
     // Initialize the app

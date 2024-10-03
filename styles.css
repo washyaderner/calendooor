@@ -36,6 +36,36 @@ h1#current-date-time.highlight-today {
     text-shadow: 1px 1px 5px #0e944d; /* Slight 3D effect */
 }
 
+/* Month navigation styling */
+#month-navigation {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#month-navigation button {
+    background-color: #4a4a4a;
+    border: none;
+    color: #ffffff;
+    padding: 10px 15px;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin: 0 10px;
+    transition: background 0.3s ease;
+}
+
+#month-navigation button:hover {
+    background: linear-gradient(145deg, #0ecc75, #0e944d);
+}
+
+#current-month {
+    font-size: 24px;
+    font-weight: bold;
+    color: #ffffff;
+}
+
 /* Calendar grid styling */
 #calendar {
     display: grid;
